@@ -49,9 +49,9 @@ public class SchedulerService {
 	 */
 	public enum ThreadPool {
 		/**
-		 * The core thread pool.
+		 * The standard thread pool.
 		 */
-		core("core"),
+		standard("std"),
 		/**
 		 * The time-consuming thread pool.
 		 */
@@ -100,9 +100,9 @@ public class SchedulerService {
 	private final Date start = new Date();
 
 	/**
-	 * The thread pool for core jobs.
+	 * The thread pool for standard jobs.
 	 */
-	private final ThreadPoolTaskExecutor threadPoolCore;
+	private final ThreadPoolTaskExecutor threadPoolStandard;
 
 	/**
 	 * The thread pool for time-consuming jobs.
@@ -123,7 +123,7 @@ public class SchedulerService {
 	 * @param webSocketService            The WebSocket service.
 	 * @since 17
 	 */
-	public SchedulerService(@Value("${ocr4all.thread.pool.size.core}") int threadPoolCoreSize,
+	public SchedulerService(@Value("${ocr4all.thread.pool.size.standard}") int threadPoolCoreSize,
 			@Value("${ocr4all.thread.pool.size,time-consuming}") int threadPoolTimeConsumingSize,
 			WebSocketService webSocketService) {
 		super();
@@ -131,7 +131,7 @@ public class SchedulerService {
 		/*
 		 * The thread pools
 		 */
-		threadPoolCore = createThreadPool(ThreadPool.core.getLabel(), threadPoolCoreSize);
+		threadPoolStandard = createThreadPool(ThreadPool.standard.getLabel(), threadPoolCoreSize);
 		threadPoolTimeConsuming = createThreadPool(ThreadPool.timeConsuming.getLabel(), threadPoolTimeConsumingSize);
 
 		this.webSocketService = webSocketService;
@@ -180,7 +180,7 @@ public class SchedulerService {
 	public void start(Job job) {
 		if (job != null && !job.isSchedulerControl()) {
 			job.schedule(
-					ThreadPool.timeConsuming.equals(job.getThreadPool()) ? threadPoolTimeConsuming : threadPoolCore,
+					ThreadPool.timeConsuming.equals(job.getThreadPool()) ? threadPoolTimeConsuming : threadPoolStandard,
 					++id, entity -> sendEvent(entity));
 
 			synchronized (job) {
