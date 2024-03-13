@@ -34,15 +34,16 @@ public class CoreApiController {
 	 * The information request mapping.
 	 */
 	public static final String informationRequestMapping = "/information";
-	
+
 	/**
 	 * The logger.
 	 */
 	protected final org.slf4j.Logger logger;
 
 	/**
-	 * Insert your text here
-	 * 
+	 * Creates a core controller for the api.
+	 *
+	 * @param logger The logger class.
 	 * @since 17
 	 */
 	public CoreApiController(Class<?> logger) {
