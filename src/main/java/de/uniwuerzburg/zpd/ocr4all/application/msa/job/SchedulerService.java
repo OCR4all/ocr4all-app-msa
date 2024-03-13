@@ -7,8 +7,10 @@
  */
 package de.uniwuerzburg.zpd.ocr4all.application.msa.job;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -124,7 +126,7 @@ public class SchedulerService {
 	 * @since 17
 	 */
 	public SchedulerService(@Value("${ocr4all.thread.pool.size.standard}") int threadPoolCoreSize,
-			@Value("${ocr4all.thread.pool.size,time-consuming}") int threadPoolTimeConsumingSize,
+			@Value("${ocr4all.thread.pool.size.time-consuming}") int threadPoolTimeConsumingSize,
 			WebSocketService webSocketService) {
 		super();
 
@@ -159,16 +161,6 @@ public class SchedulerService {
 		logger.info("created thread pool '" + name + "' with size " + corePoolSize + ".");
 
 		return threadPool;
-	}
-
-	/**
-	 * Returns the start time.
-	 *
-	 * @return The start time.
-	 * @since 1.8
-	 */
-	public Date getStart() {
-		return start;
 	}
 
 	/**
@@ -264,4 +256,147 @@ public class SchedulerService {
 			return false;
 	}
 
+	/**
+	 * Returns the current scheduler information.
+	 * 
+	 * @return The current scheduler information.
+	 * @since 17
+	 */
+	public Information getInformation() {
+		return new Information();
+	}
+
+	/**
+	 * Defines scheduler informations.
+	 *
+	 * @author <a href="mailto:herbert.baier@uni-wuerzburg.de">Herbert Baier</a>
+	 * @version 1.0
+	 * @since 17
+	 */
+	public class Information {
+		/**
+		 * The thread pool informations.
+		 */
+		private final List<ThreadPoolInformation> threadPools = new ArrayList<>();
+		{
+			threadPools.add(new ThreadPoolInformation("standard", threadPoolStandard));
+			threadPools.add(new ThreadPoolInformation("time consuming", threadPoolTimeConsuming));
+		}
+
+		/**
+		 * Default constructor for a scheduler information.
+		 * 
+		 * @since 17
+		 */
+		private Information() {
+			super();
+		}
+
+		/**
+		 * Returns the scheduler start time.
+		 *
+		 * @return The scheduler start time.
+		 * @since 1.8
+		 */
+		public Date getStart() {
+			return start;
+		}
+
+		/**
+		 * Returns the thread pool informations.
+		 *
+		 * @return The thread pool informations.
+		 * @since 17
+		 */
+		public List<ThreadPoolInformation> getThreadPools() {
+			return threadPools;
+		}
+
+		/**
+		 * Defines thread pool informations.
+		 *
+		 * @author <a href="mailto:herbert.baier@uni-wuerzburg.de">Herbert Baier</a>
+		 * @version 1.0
+		 * @since 17
+		 */
+		public static class ThreadPoolInformation {
+			/**
+			 * The name.
+			 */
+			private final String name;
+
+			/**
+			 * The thread name prefix.
+			 */
+			private final String prefix;
+
+			/**
+			 * The number of currently active threads.
+			 */
+			private final int activeThreads;
+
+			/**
+			 * The core pool size.
+			 */
+			private final int corePoolSize;
+
+			/**
+			 * Creates a thread pool information.
+			 * 
+			 * @param name       The name.
+			 * @param threadPool The thread pool.
+			 * @since 17
+			 */
+			public ThreadPoolInformation(String name, ThreadPoolTaskExecutor threadPool) {
+				super();
+
+				this.name = name;
+
+				prefix = threadPool.getThreadNamePrefix();
+				activeThreads = threadPool.getActiveCount();
+				corePoolSize = threadPool.getCorePoolSize();
+			}
+
+			/**
+			 * Returns the name.
+			 *
+			 * @return The name.
+			 * @since 17
+			 */
+			public String getName() {
+				return name;
+			}
+
+			/**
+			 * Returns the thread name prefix.
+			 *
+			 * @return The thread name prefix.
+			 * @since 17
+			 */
+			public String getPrefix() {
+				return prefix;
+			}
+
+			/**
+			 * Returns the number of currently active threads.
+			 *
+			 * @return The number of currently active threads.
+			 * @since 17
+			 */
+			public int getActiveThreads() {
+				return activeThreads;
+			}
+
+			/**
+			 * Returns the core pool size.
+			 *
+			 * @return The core pool size.
+			 * @since 17
+			 */
+			public int getCorePoolSize() {
+				return corePoolSize;
+			}
+
+		}
+	}
 }
