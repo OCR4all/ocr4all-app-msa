@@ -100,11 +100,14 @@ public abstract class Job {
 	private final String description;
 
 	/**
-	 * Creates a job
+	 * Creates a job.
 	 *
-	 * @since 1.8
+	 * @param threadPool  The thread pool.
+	 * @param key         The key.
+	 * @param description The description.
+	 * @since 17
 	 */
-	Job(SchedulerService.ThreadPool threadPool, String key, String description) {
+	protected Job(SchedulerService.ThreadPool threadPool, String key, String description) {
 		super();
 
 		this.threadPool = threadPool;
@@ -149,7 +152,7 @@ public abstract class Job {
 	 * @return The message.
 	 * @since 17
 	 */
-	protected abstract String getMessage();
+	public abstract String getMessage();
 
 	/**
 	 * Executes the job if it is in scheduled state.
@@ -166,7 +169,7 @@ public abstract class Job {
 	 * @since 1.8
 	 */
 	protected abstract void kill();
-
+	
 	/**
 	 * Returns the id. 0 if not set, this means, it is not under the control of the
 	 * scheduler.
@@ -346,7 +349,7 @@ public abstract class Job {
 			end = new Date();
 
 			logger.info("canceled job ID " + getId() + ".");
-			
+
 			if (isRunning)
 				new Thread(new Runnable() {
 					/*
