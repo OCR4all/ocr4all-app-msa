@@ -8,10 +8,14 @@
 package de.uniwuerzburg.zpd.ocr4all.application.msa.job;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -216,14 +220,95 @@ public class SchedulerService {
 	}
 
 	/**
+	 * Returns the job with given id.
+	 * 
+	 * @param id The job id.
+	 * @return The job with given id. Null if unknown.
+	 * @since 17
+	 */
+	public Job getJob(int id) {
+		if (id > 0)
+			for (Job job : jobs)
+				if (id == job.getId())
+					return job;
+
+		return null;
+	}
+
+	/**
+	 * Sorts the given jobs by id and returns it.
+	 * 
+	 * @param jobs The jobs to sort.
+	 * @return The sorted jobs.
+	 * @since 17
+	 */
+	private List<Job> sort(Collection<Job> jobs) {
+		List<Job> sorted = new ArrayList<>(jobs);
+
+		Collections.sort(sorted, new Comparator<Job>() {
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+			 */
+			@Override
+			public int compare(Job j1, Job j2) {
+				return j1.getId() - j2.getId();
+			}
+
+		});
+
+		return sorted;
+	}
+
+	/**
+	 * Returns the jobs.
+	 * 
+	 * @return The jobs.
+	 * @since 17
+	 */
+	public List<Job> getJobs() {
+		return sort(jobs);
+	}
+
+	/**
+	 * Returns the running jobs.
+	 * 
+	 * @return The running jobs.
+	 * @since 17
+	 */
+	public List<Job> getJobsRunning() {
+		return sort(jobs.stream().filter(job -> !job.isDone()).collect(Collectors.toSet()));
+	}
+
+	/**
+	 * Returns the done jobs.
+	 * 
+	 * @return The done jobs.
+	 * @since 17
+	 */
+	public List<Job> getJobsDone() {
+		return sort(jobs.stream().filter(job -> job.isDone()).collect(Collectors.toSet()));
+	}
+
+	/**
 	 * Cancels the job.
 	 * 
 	 * @param id The job id.
-	 * @throws IllegalArgumentException Throws if the job is unknown.
 	 * @since 1.8
 	 */
-	public void cancel(Job job) throws IllegalArgumentException {
-		if (job != null)
+	public void cancel(int id) {
+		cancel(getJob(id));
+	}
+
+	/**
+	 * Cancels the job.
+	 * 
+	 * @param job The job to cancel.
+	 * @since 1.8
+	 */
+	public void cancel(Job job) {
+		if (job != null && jobs.contains(job))
 			job.cancel();
 	}
 
@@ -239,7 +324,18 @@ public class SchedulerService {
 	}
 
 	/**
-	 * Expunges the given job is it is done.
+	 * Expunges the given job if it is done.
+	 * 
+	 * @param id The job id.
+	 * @return True if the job could be expunged.
+	 * @since 1.8
+	 */
+	public boolean expunge(int id) {
+		return expunge(getJob(id));
+	}
+
+	/**
+	 * Expunges the given job if it is done.
 	 * 
 	 * @param id The job.
 	 * @return True if the job could be expunged.
@@ -248,10 +344,8 @@ public class SchedulerService {
 	public synchronized boolean expunge(Job job) {
 		if (job != null && job.isDone()) {
 			synchronized (jobs) {
-				jobs.remove(job);
+				return jobs.remove(job);
 			}
-
-			return true;
 		} else
 			return false;
 	}
