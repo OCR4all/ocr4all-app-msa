@@ -16,12 +16,16 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import de.uniwuerzburg.zpd.ocr4all.application.msa.api.domain.JobResponse;
+import de.uniwuerzburg.zpd.ocr4all.application.msa.job.Job;
 import de.uniwuerzburg.zpd.ocr4all.application.msa.job.SchedulerService;
 
 /**
@@ -72,6 +76,155 @@ public class SchedulerController extends CoreApiController {
 
 			throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
 		}
+	}
+
+	/**
+	 * Returns the job in the response body.
+	 * 
+	 * @param id The job id.
+	 * @return The job in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(jobRequestMapping + idPathVariable)
+	public ResponseEntity<JobResponse> getJob(@PathVariable int id) {
+		Job job = service.getJob(id);
+
+		if (job == null)
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+
+		return ResponseEntity.ok().body(new JobResponse(job));
+	}
+
+	/**
+	 * Returns the response entity for given jobs.
+	 * 
+	 * @param jobs The jobs.
+	 * @return The response entity.
+	 * @since 17
+	 */
+	private ResponseEntity<List<JobResponse>> getJobs(List<Job> jobs) {
+		List<JobResponse> response = new ArrayList<>();
+
+		for (Job job : jobs)
+			response.add(new JobResponse(job));
+
+		return ResponseEntity.ok().body(response);
+
+	}
+
+	/**
+	 * Returns the jobs with given key sorted by id in the response body.
+	 * 
+	 * @param key The key.
+	 * @return The jobs in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(jobsRequestMapping)
+	public ResponseEntity<List<JobResponse>> getJobs(@RequestParam String key) {
+		return getJobs(service.getJobs(key));
+	}
+
+	/**
+	 * Returns the all jobs sorted by id in the response body.
+	 * 
+	 * @return The jobs in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(jobsRequestMapping + allRequestMapping)
+	public ResponseEntity<List<JobResponse>> getJobs() {
+		return getJobs(service.getJobs());
+	}
+
+	/**
+	 * Returns the running jobs sorted by id in the response body.
+	 * 
+	 * @return The running jobs in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(jobsRequestMapping + runningRequestMapping)
+	public ResponseEntity<List<JobResponse>> getJobsRunning() {
+		return getJobs(service.getJobsRunning());
+	}
+
+	/**
+	 * Returns the done jobs sorted by id in the response body.
+	 * 
+	 * @return The running jobs in the response body.
+	 * @return The status ok in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(jobsRequestMapping + doneRequestMapping)
+	public ResponseEntity<List<JobResponse>> getJobsDone() {
+		return getJobs(service.getJobsDone());
+	}
+
+	/**
+	 * Cancels the job.
+	 * 
+	 * @param id The job id.
+	 * @return The status ok in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(cancelRequestMapping + idPathVariable)
+	public ResponseEntity<Void> cancel(@PathVariable int id) {
+		service.cancel(id);
+
+		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * Cancels the jobs with given key.
+	 * 
+	 * @param key The key.
+	 * @return The status ok in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(cancelRequestMapping)
+	public ResponseEntity<Void> cancel(@RequestParam String key) {
+		service.cancel(key);
+
+		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * Expunges the done jobs.
+	 * 
+	 * @return The status ok in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(expungeRequestMapping + doneRequestMapping)
+	public ResponseEntity<Void> expunge() {
+		service.expunge();
+
+		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * Expunges the job if it is done.
+	 * 
+	 * @param id The job id.
+	 * @return The status ok in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(expungeRequestMapping + idPathVariable)
+	public ResponseEntity<Void> expunge(@PathVariable int id) {
+		service.expunge(id);
+
+		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * Expunges the done jobs with given key.
+	 * 
+	 * @param key The key.
+	 * @return The status ok in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(expungeRequestMapping)
+	public ResponseEntity<Void> expunge(@RequestParam String key) {
+		service.expunge(key);
+
+		return ResponseEntity.ok().build();
 	}
 
 	/**

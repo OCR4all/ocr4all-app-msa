@@ -36,6 +36,46 @@ public class CoreApiController {
 	public static final String informationRequestMapping = "/information";
 
 	/**
+	 * The job request mapping.
+	 */
+	public static final String jobRequestMapping = "/job";
+
+	/**
+	 * The jobs request mapping.
+	 */
+	public static final String jobsRequestMapping = "/jobs";
+
+	/**
+	 * The all request mapping.
+	 */
+	public static final String allRequestMapping = "/all";
+
+	/**
+	 * The running request mapping.
+	 */
+	public static final String runningRequestMapping = "/running";
+
+	/**
+	 * The done request mapping.
+	 */
+	public static final String doneRequestMapping = "/done";
+
+	/**
+	 * The cancel request mapping.
+	 */
+	public static final String cancelRequestMapping = "/cancel";
+
+	/**
+	 * The expunge request mapping.
+	 */
+	public static final String expungeRequestMapping = "/expunge";
+
+	/**
+	 * The id path variable.
+	 */
+	public static final String idPathVariable = "/{id}";
+	
+	/**
 	 * The logger.
 	 */
 	protected final org.slf4j.Logger logger;

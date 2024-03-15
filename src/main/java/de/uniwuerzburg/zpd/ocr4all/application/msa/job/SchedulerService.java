@@ -236,6 +236,19 @@ public class SchedulerService {
 	}
 
 	/**
+	 * Returns the jobs with given key sorted by id.
+	 * 
+	 * @param key The key.
+	 * @return The jobs with given key sorted by id.
+	 * @since 17
+	 */
+	public List<Job> getJobs(String key) {
+		return sort(jobs.stream()
+				.filter(job -> (key == null && job.getKey() == null) || (key != null && key.equals(job.getKey())))
+				.collect(Collectors.toSet()));
+	}
+
+	/**
 	 * Sorts the given jobs by id and returns it.
 	 * 
 	 * @param jobs The jobs to sort.
@@ -262,9 +275,9 @@ public class SchedulerService {
 	}
 
 	/**
-	 * Returns the jobs.
+	 * Returns the jobs sorted by id.
 	 * 
-	 * @return The jobs.
+	 * @return The jobs sorted by id.
 	 * @since 17
 	 */
 	public List<Job> getJobs() {
@@ -272,9 +285,9 @@ public class SchedulerService {
 	}
 
 	/**
-	 * Returns the running jobs.
+	 * Returns the running jobs sorted by id.
 	 * 
-	 * @return The running jobs.
+	 * @return The running jobs sorted by id.
 	 * @since 17
 	 */
 	public List<Job> getJobsRunning() {
@@ -282,9 +295,9 @@ public class SchedulerService {
 	}
 
 	/**
-	 * Returns the done jobs.
+	 * Returns the done jobs sorted by id.
 	 * 
-	 * @return The done jobs.
+	 * @return The done jobs sorted by id.
 	 * @since 17
 	 */
 	public List<Job> getJobsDone() {
@@ -299,6 +312,17 @@ public class SchedulerService {
 	 */
 	public void cancel(int id) {
 		cancel(getJob(id));
+	}
+
+	/**
+	 * Cancels the jobs with given key.
+	 * 
+	 * @param key The key.
+	 * @since 1.8
+	 */
+	public void cancel(String key) {
+		for (Job job : getJobs(key))
+			cancel(job);
 	}
 
 	/**
@@ -324,7 +348,7 @@ public class SchedulerService {
 	}
 
 	/**
-	 * Expunges the given job if it is done.
+	 * Expunges the job if it is done.
 	 * 
 	 * @param id The job id.
 	 * @return True if the job could be expunged.
@@ -335,13 +359,24 @@ public class SchedulerService {
 	}
 
 	/**
+	 * Expunges the jobs with given key that are done done.
+	 * 
+	 * @param key The key.
+	 * @since 1.8
+	 */
+	public void expunge(String key) {
+		for (Job job : getJobs(key))
+			expunge(job);
+	}
+
+	/**
 	 * Expunges the given job if it is done.
 	 * 
 	 * @param id The job.
 	 * @return True if the job could be expunged.
 	 * @since 1.8
 	 */
-	public synchronized boolean expunge(Job job) {
+	public boolean expunge(Job job) {
 		if (job != null && job.isDone()) {
 			synchronized (jobs) {
 				return jobs.remove(job);
