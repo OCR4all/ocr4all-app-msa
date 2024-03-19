@@ -33,7 +33,6 @@
 			<groupId>de.uni-wuerzburg.zpd</groupId>
 			<artifactId>ocr4all-app-communication</artifactId>
 			<version>${de.uni-wuerzburg.zpd.ocr4all.version}</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
