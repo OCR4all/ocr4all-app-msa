@@ -33,12 +33,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	 * The prefix to filter destinations targeting the message broker.
 	 */
 	@Value("${ocr4all.message.topic.prefix}")
-	private String topic;
+	private String topicPrefix;
 
 	/**
 	 * The end point.
 	 */
-	@Value("${ocr4all.message.topic.end-point}")
+	@Value("${ocr4all.message.end-point}")
 	private String endpoint;
 
 	/*
@@ -51,9 +51,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	 */
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableSimpleBroker(topic);
+		config.enableSimpleBroker(topicPrefix);
 
-		logger.info("WebSocket: enabled topic '" + topic + "'.");
+		logger.info("WebSocket: enabled topic prefix '" + topicPrefix + "'.");
 	}
 
 	/*

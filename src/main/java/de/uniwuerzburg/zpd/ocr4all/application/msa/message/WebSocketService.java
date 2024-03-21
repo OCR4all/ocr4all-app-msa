@@ -37,19 +37,19 @@ public class WebSocketService {
 	 * 
 	 * @param simpMessagingTemplate The message template for sending messages to the
 	 *                              registered clients.
-	 * @param topic                 The prefix to filter destinations targeting the
+	 * @param prefix                The prefix to filter destinations targeting the
 	 *                              message broker.
-	 * @param endpoint              The end point.
+	 * @param destination           The message destination.
 	 * @since 17
 	 */
 	public WebSocketService(SimpMessagingTemplate simpMessagingTemplate,
-			@Value("${ocr4all.message.topic.prefix}") String topic,
-			@Value("${ocr4all.message.topic.end-point}") String endpoint) {
+			@Value("${ocr4all.message.topic.prefix}") String prefix,
+			@Value("${ocr4all.message.topic.destination}") String destination) {
 		super();
 
 		this.simpMessagingTemplate = simpMessagingTemplate;
 
-		destination = topic + endpoint;
+		this.destination = prefix + destination;
 	}
 
 	/**
