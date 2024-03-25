@@ -31,6 +31,11 @@ public class CoreApiController {
 	public static final String applicationJson = "application/json";
 
 	/**
+	 * The ping request mapping.
+	 */
+	public static final String pingRequestMapping = "/ping";
+
+	/**
 	 * The information request mapping.
 	 */
 	public static final String informationRequestMapping = "/information";
@@ -74,7 +79,7 @@ public class CoreApiController {
 	 * The id path variable.
 	 */
 	public static final String idPathVariable = "/{id}";
-	
+
 	/**
 	 * The logger.
 	 */

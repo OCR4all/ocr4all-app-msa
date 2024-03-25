@@ -62,6 +62,17 @@ public class SchedulerController extends CoreApiController {
 	}
 
 	/**
+	 * Ping the scheduler.
+	 * 
+	 * @return The status ok in the response body.
+	 * @since 1.8
+	 */
+	@GetMapping(pingRequestMapping)
+	public ResponseEntity<Void> ping() {
+		return ResponseEntity.ok().build();
+	}
+
+	/**
 	 * Returns the scheduler current information in the response body.
 	 * 
 	 * @return The scheduler current information in the response body.
