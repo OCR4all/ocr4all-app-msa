@@ -21,7 +21,7 @@ import de.uniwuerzburg.zpd.ocr4all.application.communication.msa.job.ThreadPool;
  * @version 1.0
  * @since 1.8
  */
-public abstract class Job {
+public abstract class Job implements CoreJob {
 	/**
 	 * The logger.
 	 */
@@ -139,13 +139,12 @@ public abstract class Job {
 	 */
 	protected abstract void kill();
 
-	/**
-	 * Returns the id. 0 if not set, this means, it is not under the control of the
-	 * scheduler.
-	 *
-	 * @return The id.
-	 * @since 1.8
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.uniwuerzburg.zpd.ocr4all.application.msa.job.CoreJob#getId()
 	 */
+	@Override
 	public int getId() {
 		return id;
 	}
@@ -180,12 +179,12 @@ public abstract class Job {
 		return State.running.equals(state);
 	}
 
-	/**
-	 * Returns true if the job is done.
-	 *
-	 * @return True if the job is done.
-	 * @since 1.8
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.uniwuerzburg.zpd.ocr4all.application.msa.job.CoreJob#isDone()
 	 */
+	@Override
 	public boolean isDone() {
 		switch (state) {
 		case canceled:
@@ -198,12 +197,12 @@ public abstract class Job {
 		}
 	}
 
-	/**
-	 * Returns the state.
-	 *
-	 * @return The state.
-	 * @since 1.8
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.uniwuerzburg.zpd.ocr4all.application.msa.job.CoreJob#getState()
 	 */
+	@Override
 	public State getState() {
 		return state;
 	}
