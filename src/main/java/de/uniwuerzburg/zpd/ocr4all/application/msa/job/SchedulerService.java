@@ -24,6 +24,7 @@ import org.springframework.web.context.annotation.ApplicationScope;
 
 import de.uniwuerzburg.zpd.ocr4all.application.communication.message.Message;
 import de.uniwuerzburg.zpd.ocr4all.application.communication.message.spi.EventSPI;
+import de.uniwuerzburg.zpd.ocr4all.application.communication.msa.job.ThreadPool;
 import de.uniwuerzburg.zpd.ocr4all.application.msa.message.WebSocketService;
 
 /**
@@ -45,50 +46,6 @@ public class SchedulerService {
 	 * The prefix to use for the names of newly created threads by task executor.
 	 */
 	private static final String taskExecutorThreadNamePrefix = "job";
-
-	/**
-	 * Defines thread pools.
-	 *
-	 * @author <a href="mailto:herbert.baier@uni-wuerzburg.de">Herbert Baier</a>
-	 * @version 1.0
-	 * @since 1.8
-	 */
-	public enum ThreadPool {
-		/**
-		 * The standard thread pool.
-		 */
-		standard("std"),
-		/**
-		 * The time-consuming thread pool.
-		 */
-		timeConsuming("tc");
-
-		/**
-		 * The label.
-		 */
-		private final String label;
-
-		/**
-		 * Creates a thread pool.
-		 * 
-		 * @param label The label.
-		 * @since 1.8
-		 */
-		private ThreadPool(String label) {
-			this.label = label;
-		}
-
-		/**
-		 * Returns the label.
-		 *
-		 * @return The label.
-		 * @since 1.8
-		 */
-		public String getLabel() {
-			return label;
-		}
-
-	}
 
 	/**
 	 * The job id.
@@ -372,7 +329,7 @@ public class SchedulerService {
 	/**
 	 * Expunges the given job if it is done.
 	 * 
-	 * @param id The job.
+	 * @param job The job.
 	 * @return True if the job could be expunged.
 	 * @since 1.8
 	 */

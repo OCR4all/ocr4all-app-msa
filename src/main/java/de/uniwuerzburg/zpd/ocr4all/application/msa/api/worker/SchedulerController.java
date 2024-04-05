@@ -24,7 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import de.uniwuerzburg.zpd.ocr4all.application.msa.api.domain.JobResponse;
+import de.uniwuerzburg.zpd.ocr4all.application.communication.msa.api.domain.JobResponse;
+import de.uniwuerzburg.zpd.ocr4all.application.msa.api.util.ApiUtils;
 import de.uniwuerzburg.zpd.ocr4all.application.msa.job.Job;
 import de.uniwuerzburg.zpd.ocr4all.application.msa.job.SchedulerService;
 
@@ -103,7 +104,7 @@ public class SchedulerController extends CoreApiController {
 		if (job == null)
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
-		return ResponseEntity.ok().body(new JobResponse(job));
+		return ResponseEntity.ok().body(ApiUtils.getJobResponse(job));
 	}
 
 	/**
@@ -117,7 +118,7 @@ public class SchedulerController extends CoreApiController {
 		List<JobResponse> response = new ArrayList<>();
 
 		for (Job job : jobs)
-			response.add(new JobResponse(job));
+			response.add(ApiUtils.getJobResponse(job));
 
 		return ResponseEntity.ok().body(response);
 
@@ -331,7 +332,6 @@ public class SchedulerController extends CoreApiController {
 			/**
 			 * Creates a thread pool information.
 			 * 
-			 * @param name       The name.
 			 * @param threadPool The thread pool.
 			 * @since 17
 			 */

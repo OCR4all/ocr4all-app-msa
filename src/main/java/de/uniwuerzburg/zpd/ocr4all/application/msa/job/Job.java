@@ -11,6 +11,9 @@ import java.util.Date;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import de.uniwuerzburg.zpd.ocr4all.application.communication.msa.job.State;
+import de.uniwuerzburg.zpd.ocr4all.application.communication.msa.job.ThreadPool;
+
 /**
  * Defines jobs for scheduler.
  *
@@ -19,40 +22,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * @since 1.8
  */
 public abstract class Job {
-	/**
-	 * Defines job states.
-	 *
-	 * @author <a href="mailto:herbert.baier@uni-wuerzburg.de">Herbert Baier</a>
-	 * @version 1.0
-	 * @since 1.8
-	 */
-	public enum State {
-		/**
-		 * The initialized state.
-		 */
-		initialized,
-		/**
-		 * The scheduled state.
-		 */
-		scheduled,
-		/**
-		 * The running state.
-		 */
-		running,
-		/**
-		 * The completed state.
-		 */
-		completed,
-		/**
-		 * The canceled state.
-		 */
-		canceled,
-		/**
-		 * The interrupted state.
-		 */
-		interrupted;
-	}
-
 	/**
 	 * The logger.
 	 */
@@ -87,7 +56,7 @@ public abstract class Job {
 	/**
 	 * The thread pool.
 	 */
-	private final SchedulerService.ThreadPool threadPool;
+	private final ThreadPool threadPool;
 
 	/**
 	 * The key.
@@ -107,7 +76,7 @@ public abstract class Job {
 	 * @param description The description.
 	 * @since 17
 	 */
-	protected Job(SchedulerService.ThreadPool threadPool, String key, String description) {
+	protected Job(ThreadPool threadPool, String key, String description) {
 		super();
 
 		this.threadPool = threadPool;
@@ -122,7 +91,7 @@ public abstract class Job {
 	 * @return The thread pool.
 	 * @since 1.8
 	 */
-	public SchedulerService.ThreadPool getThreadPool() {
+	public ThreadPool getThreadPool() {
 		return threadPool;
 	}
 
@@ -169,7 +138,7 @@ public abstract class Job {
 	 * @since 1.8
 	 */
 	protected abstract void kill();
-	
+
 	/**
 	 * Returns the id. 0 if not set, this means, it is not under the control of the
 	 * scheduler.
