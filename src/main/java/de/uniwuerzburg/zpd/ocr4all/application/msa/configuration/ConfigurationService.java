@@ -27,12 +27,12 @@ public class ConfigurationService {
 	/**
 	 * The environment that this component runs.
 	 */
-	private Environment environment;
+	private final Environment environment;
 
 	/**
 	 * The server properties for a web server (e.g. port and path settings).
 	 */
-	private ServerProperties serverProperties;
+	private final ServerProperties serverProperties;
 
 	/**
 	 * Creates a configuration service.
@@ -42,7 +42,8 @@ public class ConfigurationService {
 	 *                         path settings).
 	 * @since 1.8
 	 */
-	public ConfigurationService(Environment environment, ServerProperties serverProperties) {
+	public ConfigurationService(Environment environment,
+			ServerProperties serverProperties) {
 		super();
 
 		this.environment = environment;
