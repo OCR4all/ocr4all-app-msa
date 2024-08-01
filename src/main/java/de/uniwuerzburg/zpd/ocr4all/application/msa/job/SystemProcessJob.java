@@ -22,6 +22,11 @@ import de.uniwuerzburg.zpd.ocr4all.application.spi.util.SystemProcess;
  */
 public class SystemProcessJob extends Job implements SystemJob {
 	/**
+	 * The logger.
+	 */
+	private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SystemProcessJob.class);;
+
+	/**
 	 * The system process.
 	 */
 	private final SystemProcess process;
@@ -97,6 +102,16 @@ public class SystemProcessJob extends Job implements SystemJob {
 	@Override
 	protected State execute() {
 		try {
+			StringBuffer buffer = new StringBuffer();
+			for (String argument : arguments)
+				buffer.append(" " + (argument.contains(" ") || argument.contains("\"")
+						? "\"" + argument.replace("\"", "\\\"") + "\""
+						: argument.replace("\"", "\\\"")));
+
+			logger.info("execute system process"
+					+ (process.getDirectory() == null ? "" : "(" + process.getDirectory().toString() + ")") + ": "
+					+ process.getCommand() + buffer.toString());
+
 			process.execute(false, isAddEnvironmentStandardOutput, isDiscardOutput, isDiscardError, arguments);
 
 			State state = process.getExitValue() == 0 ? State.completed : State.interrupted;
